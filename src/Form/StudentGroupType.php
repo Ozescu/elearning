@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\Group;
+use App\Entity\StudentGroup;
+use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use Doctrine\ORM\EntityRepository;
+
+class StudentGroupType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('student', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')
+                        ->where('JSON_CONTAINS(u.roles, :role) = 1')
+                        ->setParameter('role', '"ROLE_STUDENT"');
+                },
+            ])
+            ->add('group', EntityType::class, [
+                'class' => Group::class,
+                'choice_label' => 'name', // better UX
+            ]);
+    }
+}

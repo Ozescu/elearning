@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/test.css') }}">
+
+
+<div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
+
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code>C:/xampp/htdocs/elearning/src/Controller/TestController.php</code></li>
+        <li>Your template at <code>C:/xampp/htdocs/elearning/templates/test/index.html.twig</code></li>
+    </ul>
+</div>
+{% endblock %}

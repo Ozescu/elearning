@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit StudentGroup{% endblock %}
+
+{% block body %}
+    <h1>Edit StudentGroup</h1>
+
+    {{ include('student_group/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_student_group_index') }}">back to list</a>
+
+    {{ include('student_group/_delete_form.html.twig') }}
+{% endblock %}

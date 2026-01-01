@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EMSI — Digital Learning{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<header class="topbar">
+    <div class="container topbar-inner">
+        <div class="brand">
+            <!-- replace with emsi-logo.svg -->
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>E-Learning</span>
+        </div>
+
+        <nav class="top-nav">
+            <a href="#academics">Academics</a>
+            <a href="#platform">Platform</a>
+            <a href="#about">About</a>
+            <a href="{{ path('app_login') }}" class="nav-cta">Sign in</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero-academic">
+    <div class="container hero-inner">
+        <div class="hero-left">
+            <p class="hero-tag">EMSI DIGITAL EDUCATION</p>
+
+            <h1>
+                Engineering education,<br>
+                reimagined for the digital era.
+            </h1>
+
+            <p class="hero-subtext">
+                A secure, structured and modern learning environment
+                designed for EMSI engineering students and professors.
+            </p>
+
+            <div class="hero-actions">
+                <a href="{{ path('app_login') }}" class="btn-main">Access Platform</a>
+                <a href="#platform" class="btn-outline">Discover the system</a>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <!-- replace with academic-hero.jpg -->
+            <img src="{{ asset('images/emsi-campus.jpg') }}" alt="EMSI Digital Campus">
+        </div>
+    </div>
+</section>
+
+<section id="platform" class="section-clean">
+    <div class="container">
+
+        <div class="section-header">
+            <h2>A complete academic platform</h2>
+            <p>
+                Built to support rigorous engineering education,
+                collaboration, and continuous evaluation.
+            </p>
+        </div>
+
+        <div class="grid-4">
+            <div class="card-minimal">
+                <h3>Courses</h3>
+                <p>Structured modules aligned with EMSI programs.</p>
+            </div>
+
+            <div class="card-minimal">
+                <h3>Lectures</h3>
+                <p>Recorded and live sessions in high definition.</p>
+            </div>
+
+            <div class="card-minimal">
+                <h3>Assessments</h3>
+                <p>Quizzes, exams, and continuous evaluation.</p>
+            </div>
+
+            <div class="card-minimal">
+                <h3>Analytics</h3>
+                <p>Track progress, results and engagement.</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section id="academics" class="section-accent">
+    <div class="container accent-inner">
+        <div>
+            <h2>Designed for academic excellence</h2>
+            <p>
+                EMSI’s platform follows international standards
+                used by top engineering institutions worldwide.
+            </p>
+        </div>
+
+        <div class="accent-stats">
+            <div>
+                <strong>30+</strong>
+                <span>Engineering programs</span>
+            </div>
+            <div>
+                <strong>50k+</strong>
+                <span>Students</span>
+            </div>
+            <div>
+                <strong>100%</strong>
+                <span>Digital continuity</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="section-clean">
+    <div class="container narrow">
+        <h2>About EMSI</h2>
+        <p>
+            École Marocaine des Sciences de l’Ingénierie is a leading
+            engineering institution in Morocco, committed to innovation,
+            academic rigor, and digital transformation.
+        </p>
+    </div>
+</section>
+
+<footer class="footer-academic">
+    <div class="container footer-inner">
+        <p>© {{ "now"|date("Y") }} EMSI — École Marocaine des Sciences de l’Ingénierie</p>
+    </div>
+</footer>
+
+{% endblock %}

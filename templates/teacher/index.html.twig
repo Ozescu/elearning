@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block body %}
+<h1>Teacher Dashboard</h1>
+<p>Welcome, {{ app.user ? app.user.userIdentifier : 'teacher' }}.</p>
+<p>Here you can post courses, manage assigned classes, and interact with students.</p>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}StudentGroup index{% endblock %}
+
+{% block body %}
+    <h1>StudentGroup index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Approved</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for student_group in student_groups %}
+            <tr>
+                <td>{{ student_group.id }}</td>
+                <td>{{ student_group.approved ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_student_group_show', {'id': student_group.id}) }}">show</a>
+                    <a href="{{ path('app_student_group_edit', {'id': student_group.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_student_group_new') }}">Create new</a>
+{% endblock %}
