@@ -1,34 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}EMSI | Sign in{% endblock %}
 
 {% block body %}
-<form method="post" data-turbo="false">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<link rel="stylesheet" href="{{ asset('css/login.css') }}">
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
+<section class="login-page">
+
+    <div class="login-container">
+
+        <!-- LEFT SIDE (Brand / Academic) -->
+        <div class="login-left">
+            <!-- replace with emsi-logo.svg -->
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI Logo" class="login-logo">
+
+            <h1>EMSI E-Learning</h1>
+            <p>
+                Access the official digital learning platform for
+                EMSI engineering students and faculty.
+            </p>
+
+            <!-- optional image -->
+            <!-- <img src="{{ asset('images/login-campus.jpg') }}" class="login-image"> -->
         </div>
-    {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="_password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        <!-- RIGHT SIDE (FORM) -->
+        <div class="login-right">
 
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
-        </label>
+            <h2>Sign in</h2>
+            <p class="login-subtext">Use your institutional account</p>
+
+            {% if error %}
+                <div class="login-error">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="login-info">
+                    You are logged in as <strong>{{ app.user.userIdentifier }}</strong>.
+                    <a href="{{ logout_path() }}">Logout</a>
+                </div>
+            {% endif %}
+
+            <form method="post" data-turbo="false" class="login-form">
+
+                <div class="form-group">
+                    <label for="inputEmail">Email address</label>
+                    <input
+                        type="email"
+                        id="inputEmail"
+                        name="_username"
+                        value="{{ last_username }}"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword">Password</label>
+                    <input
+                        type="password"
+                        id="inputPassword"
+                        name="_password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <input
+                    type="hidden"
+                    name="_csrf_token"
+                    value="{{ csrf_token('authenticate') }}"
+                >
+
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" name="_remember_me">
+                        Remember me
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Sign in
+                </button>
+
+            </form>
+
+            <p class="login-footer">
+                © {{ "now"|date("Y") }} EMSI — École Marocaine des Sciences de l’Ingénierie
+            </p>
+
+        </div>
+
     </div>
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+</section>
 {% endblock %}
+
+
+

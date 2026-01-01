@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Quiz | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Teacher</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_teacher') }}">Dashboard</a>
+            <a href="{{ path('app_course_index') }}">My Courses</a>
+            <a href="{{ path('app_student_group_index') }}">Manage Students</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>Create New Quiz</h1>
+        </header>
+
+        <section class="harvard-section">
+            <div class="form-container">
+                {{ form_start(form) }}
+                
+                <div class="form-group">
+                    {{ form_label(form.title, 'Quiz Title') }}
+                    {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter quiz title'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description, 'Description') }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Enter quiz description', 'rows': 4}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.deadline, 'Deadline') }}
+                    {{ form_widget(form.deadline, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.course, 'Course') }}
+                    {{ form_widget(form.course, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Create Quiz</button>
+                    <a href="javascript:history.back()" class="btn-secondary">Cancel</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

@@ -1,9 +1,116 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Student Dashboard{% endblock %}
+{% block title %}My Learning | EMSI{% endblock %}
 
 {% block body %}
-<h1>Student Dashboard</h1>
-<p>Welcome, {{ app.user ? app.user.userIdentifier : 'student' }}.</p>
-<p>Here you can view assigned courses, ask questions, and track progress.</p>
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>EMSI</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_student') }}" class="active">Dashboard</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>My Learning Dashboard</h1>
+            <div class="harvard-topbar-user">
+                <p>Welcome, <strong>{{ app.user.userIdentifier }}</strong></p>
+            </div>
+        </header>
+
+        <section class="harvard-section">
+            {% if announcements %}
+            <div style="background: white; padding: 25px; border-radius: 4px; border-left: 4px solid #C41E3A; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h2 style="color: #C41E3A; font-size: 20px; margin-bottom: 20px; border: none; padding: 0;">📢 Important Announcements</h2>
+                <div style="display: grid; gap: 15px;">
+                    {% for announcement in announcements %}
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 3px; border-left: 3px solid #C41E3A;">
+                        <h4 style="margin: 0 0 8px 0; color: #2c3e50; font-size: 15px;">{{ announcement.title }}</h4>
+                        <p style="margin: 0 0 8px 0; color: #7f8c8d; font-size: 14px;">{{ announcement.content }}</p>
+                        <small style="color: #bdc3c7;">{{ announcement.createdAt|date('M d, Y H:i') }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="section-header">
+                <h2>My Courses & Materials</h2>
+            </div>
+
+            {% if studentGroups %}
+                <div class="action-cards">
+                {% for sg in studentGroups %}
+                    {% set groupCourses = [] %}
+                    {% for course in courses %}
+                        {% if course.group.id == sg.group.id %}
+                            {% set groupCourses = groupCourses|merge([course]) %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if groupCourses|length > 0 %}
+                        {% for course in groupCourses %}
+                        <div class="card">
+                            <h3>{{ course.title }}</h3>
+                            <p style="color: #7f8c8d; margin-bottom: 15px;">{{ course.description|default('No description available') }}</p>
+                            
+                            {% if course.creditHours %}
+                            <p style="font-size: 13px; color: #bdc3c7; margin: 10px 0;">{{ course.creditHours }} Credit Hours</p>
+                            {% endif %}
+                            
+                            <!-- Lessons -->
+                            {% if course.lessons|length > 0 %}
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 3px; margin-bottom: 12px;">
+                                <h6 style="margin: 0 0 10px 0; font-size: 13px; color: #2c3e50; font-weight: 600;">📚 Lessons ({{ course.lessons|length }})</h6>
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    {% for lesson in course.lessons %}
+                                        <li style="margin-bottom: 6px;">
+                                            <a href="{{ path('app_student_lesson_view', {'id': lesson.id}) }}" style="color: #C41E3A; text-decoration: none; font-size: 13px;">
+                                                {{ lesson.title }}
+                                                {% if lesson.isOverdue() %}<span class="badge danger">Overdue</span>{% endif %}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Quizzes -->
+                            {% if course.quizzes|length > 0 %}
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 3px;">
+                                <h6 style="margin: 0 0 10px 0; font-size: 13px; color: #2c3e50; font-weight: 600;">✓ Quizzes ({{ course.quizzes|length }})</h6>
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    {% for quiz in course.quizzes %}
+                                        <li style="margin-bottom: 6px;">
+                                            <a href="{{ path('app_student_quiz_view', {'id': quiz.id}) }}" style="color: #C41E3A; text-decoration: none; font-size: 13px;">
+                                                {{ quiz.title }}
+                                                {% if quiz.isOverdue() %}<span class="badge danger">Overdue</span>{% endif %}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>You are not assigned to any groups yet.</p>
+                    <p>Please contact your administrator to be assigned to a group.</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
+
 {% endblock %}

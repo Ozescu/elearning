@@ -1,20 +1,125 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AdminController!{% endblock %}
+{% block title %}EMSI Admin Dashboard{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="harvard-layout">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/xampp/htdocs/elearning/src/Controller/AdminController.php</code></li>
-        <li>Your template at <code>C:/xampp/htdocs/elearning/templates/admin/index.html.twig</code></li>
-    </ul>
+    <!-- SIDEBAR -->
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_admin') }}" class="active">Dashboard</a>
+            <a href="{{ path('app_user_index') }}">Users & Roles</a>
+            <a href="{{ path('app_group_index') }}">Groups</a>
+            <a href="{{ path('app_admin_student_group_index') }}">Student Assignments</a>
+            <a href="{{ path('app_announcement_index') }}">Announcements</a>
+            <a href="{{ path('app_reports') }}">Reports</a>
+            <a href="{{ path('app_system_settings') }}">System Settings</a>
+            <a href="{{ path('app_audit_logs') }}">Audit Logs</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="harvard-main">
+
+        <!-- TOP BAR -->
+        <header class="harvard-topbar">
+            <h1>Administration</h1>
+            <div class="harvard-user">
+                <span>{{ app.user.userIdentifier }}</span>
+                <span class="role">ROLE_ADMIN</span>
+            </div>
+        </header>
+
+        <!-- DASHBOARD STATS -->
+        <section class="harvard-stats">
+            <div class="stat-card">
+                <strong>1,248</strong>
+                <span>Total Users</span>
+            </div>
+            <div class="stat-card">
+                <strong>96</strong>
+                <span>Courses</span>
+            </div>
+            <div class="stat-card">
+                <strong>312</strong>
+                <span>Active Today</span>
+            </div>
+            <div class="stat-card">
+                <strong>4</strong>
+                <span>System Alerts</span>
+            </div>
+        </section>
+
+        <!-- USERS TABLE -->
+        <section class="harvard-section">
+            <div class="section-header">
+                <h2>Users & Roles</h2>
+                <a href="{{ path('app_user_new') }}" class="btn-primary">+ Create User</a>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>student1@emsi.ma</td>
+                        <td>ROLE_STUDENT</td>
+                        <td><span class="badge success">Active</span></td>
+                        <td>2026-01-01</td>
+                        <td>
+                            <button>Edit</button>
+                            <button class="danger">Disable</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>teacher@emsi.ma</td>
+                        <td>ROLE_TEACHER</td>
+                        <td><span class="badge warning">Pending</span></td>
+                        <td>—</td>
+                        <td>
+                            <button>Approve</button>
+                            <button class="danger">Reject</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SYSTEM ALERTS -->
+        <section class="harvard-section">
+            <h2>Quick Actions</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                <a href="{{ path('app_user_new') }}" style="display: block; padding: 20px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600;">
+                    ➕ Create User
+                </a>
+                <a href="{{ path('app_group_new') }}" style="display: block; padding: 20px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600;">
+                    ➕ Create Group
+                </a>
+                <a href="{{ path('app_admin_student_group_index') }}" style="display: block; padding: 20px; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600;">
+                    👥 Assign Students
+                </a>
+            </div>
+        </section>
+
+    </main>
 </div>
 {% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}System Settings{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_admin') }}">Dashboard</a>
+            <a href="{{ path('app_user_index') }}">Users & Roles</a>
+            <a href="{{ path('app_group_index') }}">Groups</a>
+            <a href="{{ path('app_student_group_index') }}">Student Groups</a>
+            <a href="{{ path('app_reports') }}">Reports</a>
+            <a href="{{ path('app_system_settings') }}" class="active">System Settings</a>
+            <a href="{{ path('app_audit_logs') }}">Audit Logs</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>System Settings</h1>
+        </header>
+
+        {% if app.flashes %}
+            {% for message in app.flashes.success %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <section class="harvard-section">
+            <h2>Access Control</h2>
+            
+            <div class="setting-item">
+                <div class="setting-header">
+                    <h3>Student Access</h3>
+                    <span class="status-badge {% if allowStudentAccess %}enabled{% else %}disabled{% endif %}">
+                        {{ allowStudentAccess ? 'Enabled' : 'Disabled' }}
+                    </span>
+                </div>
+                <p>Allow students to access their dashboard, courses, and submit assignments.</p>
+                <form method="POST" action="{{ path('app_system_settings_toggle_student') }}" style="display:inline;">
+                    <button type="submit" class="btn-primary">
+                        {{ allowStudentAccess ? 'Disable' : 'Enable' }} Student Access
+                    </button>
+                </form>
+            </div>
+
+            <hr>
+
+            <div class="setting-item">
+                <div class="setting-header">
+                    <h3>Teacher Access</h3>
+                    <span class="status-badge {% if allowTeacherAccess %}enabled{% else %}disabled{% endif %}">
+                        {{ allowTeacherAccess ? 'Enabled' : 'Disabled' }}
+                    </span>
+                </div>
+                <p>Allow teachers to access their dashboard, create courses, and grade assignments.</p>
+                <form method="POST" action="{{ path('app_system_settings_toggle_teacher') }}" style="display:inline;">
+                    <button type="submit" class="btn-primary">
+                        {{ allowTeacherAccess ? 'Disable' : 'Enable' }} Teacher Access
+                    </button>
+                </form>
+            </div>
+
+            <hr>
+
+            <div class="setting-item">
+                <div class="setting-header">
+                    <h3>Maintenance Mode</h3>
+                    <span class="status-badge {% if maintenanceMode %}enabled{% else %}disabled{% endif %}">
+                        {{ maintenanceMode ? 'On' : 'Off' }}
+                    </span>
+                </div>
+                <p>Enable maintenance mode to temporarily disable access for all non-admin users.</p>
+                <form method="POST" action="{{ path('app_system_settings_toggle_maintenance') }}" style="display:inline;">
+                    <button type="submit" class="btn-primary">
+                        Turn {{ maintenanceMode ? 'Off' : 'On' }} Maintenance Mode
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .setting-item {
+        padding: 20px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+    
+    .setting-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .setting-header h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .status-badge.enabled {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-badge.disabled {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .setting-item p {
+        margin: 0 0 15px 0;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+
+

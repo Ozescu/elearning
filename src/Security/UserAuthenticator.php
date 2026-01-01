@@ -30,9 +30,18 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     {
         // Support both JSON payloads and traditional form submissions.
         $post = $request->request;
-        $email = (string) ($post->get('email') ?? $post->get('_username') ?? $request->getPayload()->getString('email'));
-        $password = (string) ($post->get('password') ?? $post->get('_password') ?? $request->getPayload()->getString('password'));
-        $csrf = (string) ($post->get('_csrf_token') ?? $request->getPayload()->getString('_csrf_token'));
+        $json = [];
+        $contentType = (string) $request->headers->get('Content-Type', '');
+        if (str_contains($contentType, 'application/json')) {
+            $decoded = json_decode($request->getContent() ?? '', true);
+            if (is_array($decoded)) {
+                $json = $decoded;
+            }
+        }
+
+        $email = (string) ($post->get('email') ?? $post->get('_username') ?? ($json['email'] ?? ''));
+        $password = (string) ($post->get('password') ?? $post->get('_password') ?? ($json['password'] ?? ''));
+        $csrf = (string) ($post->get('_csrf_token') ?? ($json['_csrf_token'] ?? ''));
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 

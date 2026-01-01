@@ -1,0 +1,282 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz Results | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>EMSI</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_student') }}">Dashboard</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>Quiz Results</h1>
+        </header>
+
+        <section class="harvard-section">
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div style="background: white; padding: 30px; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h2 style="border: none; padding: 0; margin-bottom: 30px;">{{ quiz.title }}</h2>
+                    
+                    <div style="display: flex; gap: 40px; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #e5e7eb;">
+                        <div style="flex: 0 0 150px; text-align: center;">
+                            <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #C41E3A 0%, #8b1428 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 4px 10px rgba(196, 30, 58, 0.2);">
+                                <span style="color: white; font-size: 36px; font-weight: 700;">{{ studentQuiz.score|round(0) }}%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0 0 10px 0; color: #2c3e50;">Your Score</h3>
+                            {% set percentage = studentQuiz.score %}
+                            {% if percentage >= 80 %}
+                                <p style="margin: 0; color: #28a745; font-size: 16px; font-weight: 600;">Excellent! 🎉</p>
+                            {% elseif percentage >= 70 %}
+                                <p style="margin: 0; color: #17a2b8; font-size: 16px; font-weight: 600;">Good Job! 👏</p>
+                            {% elseif percentage >= 60 %}
+                                <p style="margin: 0; color: #ffc107; font-size: 16px; font-weight: 600;">Not Bad 👍</p>
+                            {% else %}
+                                <p style="margin: 0; color: #dc3545; font-size: 16px; font-weight: 600;">Keep Trying 💪</p>
+                            {% endif %}
+
+                            <div style="margin-top: 15px; color: #7f8c8d; font-size: 14px;">
+                                <p style="margin: 5px 0;"><strong>Submitted:</strong> {{ studentQuiz.submittedAt|date('M d, Y H:i') }}</p>
+                                <p style="margin: 5px 0;"><strong>Total Questions:</strong> {{ quiz.questions|length }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="color: #2c3e50; margin-bottom: 20px;">Answer Review</h3>
+                        
+                        {% for question in quiz.questions %}
+                            {% set userAnswer = studentQuiz.answers['question_' ~ question.id] %}
+                            {% set isCorrect = (userAnswer|lower) == (question.correctAnswer|lower) %}
+                            
+                            <div style="margin-bottom: 30px; padding: 20px; background: {% if isCorrect %}#f0fff4{% else %}#fff5f5{% endif %}; border-left: 4px solid {% if isCorrect %}#28a745{% else %}#dc3545{% endif %}; border-radius: 3px;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                                    <strong style="color: #2c3e50;">Question {{ loop.index }}:</strong>
+                                    <span>
+                                        {% if isCorrect %}
+                                            <span class="badge success" style="background: #28a745; color: white; padding: 4px 8px; border-radius: 3px; font-size: 12px;">✓ Correct</span>
+                                        {% else %}
+                                            <span class="badge danger" style="background: #dc3545; color: white; padding: 4px 8px; border-radius: 3px; font-size: 12px;">✗ Incorrect</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                
+                                <p style="margin: 0 0 12px 0; color: #4b5563;">{{ question.question }}</p>
+                                
+                                <div>
+                                    <div style="margin-bottom: 12px;">
+                                        <strong style="color: #2c3e50; font-size: 13px;">Your Answer:</strong>
+                                        <p style="margin: 4px 0 0 0; color: #7f8c8d;">{{ userAnswer|default('(Not answered)') }}</p>
+                                    </div>
+                                    
+                                    {% if not isCorrect %}
+                                        <div>
+                                            <strong style="color: #2c3e50; font-size: 13px;">Correct Answer:</strong>
+                                            <p style="margin: 4px 0 0 0; color: #28a745;">{{ question.correctAnswer }}</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                        <a href="{{ path('app_student_quiz_view', {'id': quiz.id}) }}" class="btn-secondary">← Back to Quiz</a>
+                        <a href="{{ path('app_student') }}" class="btn-primary">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<style>
+.results-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.results-card {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.results-card h2 {
+    color: #1f2937;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.score-display {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+}
+
+.score-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.score-value {
+    font-size: 48px;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.score-info {
+    color: white;
+}
+
+.score-info h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.grade {
+    font-size: 24px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.grade.excellent { color: #84cc16; }
+.grade.good { color: #10b981; }
+.grade.fair { color: #f59e0b; }
+.grade.poor { color: #ef4444; }
+
+.submission-info {
+    background: #f3f4f6;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+}
+
+.submission-info p {
+    margin: 10px 0;
+    color: #374151;
+}
+
+.submission-info p:first-child {
+    margin-top: 0;
+}
+
+.answer-review h3 {
+    color: #1f2937;
+    font-size: 20px;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.answer-item {
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border-left: 4px solid #e5e7eb;
+}
+
+.answer-item.correct {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+}
+
+.answer-item.incorrect {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+}
+
+.answer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.answer-header strong {
+    color: #1f2937;
+}
+
+.answer-question {
+    color: #374151;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.answer-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.user-answer,
+.correct-answer {
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.user-answer strong,
+.correct-answer strong {
+    color: #374151;
+    font-size: 14px;
+}
+
+.user-answer p,
+.correct-answer p {
+    margin: 8px 0 0 0;
+    color: #6b7280;
+}
+
+.results-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.results-actions a {
+    padding: 12px 30px;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .score-display {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .answer-comparison {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

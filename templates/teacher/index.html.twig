@@ -1,9 +1,105 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Teacher Dashboard{% endblock %}
+{% block title %}Teacher Dashboard | EMSI{% endblock %}
 
 {% block body %}
-<h1>Teacher Dashboard</h1>
-<p>Welcome, {{ app.user ? app.user.userIdentifier : 'teacher' }}.</p>
-<p>Here you can post courses, manage assigned classes, and interact with students.</p>
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>EMSI</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_teacher') }}" class="active">Dashboard</a>
+            <a href="{{ path('app_course_index') }}">My Courses</a>
+            <a href="{{ path('app_student_group_index') }}">Manage Students</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="harvard-main">
+
+        <header class="harvard-topbar">
+            <h1>Teacher Dashboard</h1>
+            <div class="harvard-topbar-user">
+                <p>Welcome, <strong>{{ app.user.userIdentifier }}</strong></p>
+            </div>
+        </header>
+
+        <section class="harvard-section">
+            <div class="section-header">
+                <h2>Quick Actions</h2>
+                <a href="{{ path('app_course_new') }}" class="btn-primary">+ Create Course</a>
+            </div>
+            
+            <div class="action-cards">
+                <a href="{{ path('app_course_index') }}" class="action-card">
+                    <h3>📚 My Courses</h3>
+                    <p>View and manage your courses, lessons, and quizzes</p>
+                </a>
+                
+                <a href="{{ path('app_course_index') }}" class="action-card">
+                    <h3>📝 Manage Lessons</h3>
+                    <p>Create and upload lesson materials with PDF support</p>
+                </a>
+                
+                <a href="{{ path('app_course_index') }}" class="action-card">
+                    <h3>✓ Create Quizzes</h3>
+                    <p>Build quizzes with multiple choice, true/false, and short answer</p>
+                </a>
+                
+                <a href="{{ path('app_student_group_index') }}" class="action-card">
+                    <h3>👥 Student Groups</h3>
+                    <p>Manage your student groups and assignments</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="harvard-section">
+            <h2 style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #C41E3A;">Getting Started Guide</h2>
+            <div class="help-box">
+                <div class="help-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Create Your Course</h4>
+                        <p>Click "Create Course" button to add a new course to your curriculum</p>
+                    </div>
+                </div>
+                
+                <div class="help-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Add Lessons</h4>
+                        <p>Go to My Courses, select a course, then add lessons with PDF materials</p>
+                    </div>
+                </div>
+                
+                <div class="help-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Create Quizzes</h4>
+                        <p>Build quizzes with various question types to assess student learning</p>
+                    </div>
+                </div>
+                
+                <div class="help-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Manage Students</h4>
+                        <p>Organize students into groups and assign them to your courses</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
 {% endblock %}
+
+
+

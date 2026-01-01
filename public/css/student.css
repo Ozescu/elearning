@@ -1,0 +1,59 @@
+:root {
+    --green: #0f7b5b;
+    --bg: #f9fafb;
+    --white: #ffffff;
+}
+
+body {
+    font-family: Inter, system-ui;
+    background: var(--bg);
+}
+
+/* HEADER */
+.student-header {
+    padding: 20px;
+    background: var(--white);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* MAIN */
+.student-main {
+    padding: 20px;
+}
+
+/* CURRENT */
+.course-progress {
+    background: var(--white);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.progress-bar {
+    background: #e5e7eb;
+    height: 8px;
+    margin: 10px 0 20px;
+}
+
+.progress-bar div {
+    height: 100%;
+    background: var(--green);
+}
+
+/* COURSES */
+.course-item {
+    background: var(--white);
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+/* BUTTON */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    font-size: 16px;
+}

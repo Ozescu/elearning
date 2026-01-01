@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Courses{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>EMSI</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_teacher') }}">Dashboard</a>
+            <a href="{{ path('app_course_index') }}" class="active">My Courses</a>
+            <a href="{{ path('app_student_group_index') }}">Manage Students</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>My Courses</h1>
+            <div class="harvard-topbar-user">
+                <p>Welcome, <strong>{{ app.user.userIdentifier }}</strong></p>
+            </div>
+        </header>
+
+        <section class="harvard-section">
+            <div class="section-header">
+                <h2>Course Management</h2>
+                <a href="{{ path('app_course_new') }}" class="btn-primary">+ Create Course</a>
+            </div>
+
+            {% if courses %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Course Title</th>
+                        <th>Group</th>
+                        <th>Credit Hours</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for course in courses %}
+                    <tr>
+                        <td><strong>{{ course.title }}</strong></td>
+                        <td>{{ course.group.name }} ({{ course.group.year }})</td>
+                        <td>{{ course.creditHours ?? '—' }}</td>
+                        <td>{{ course.createdAt|date('M d, Y') }}</td>
+                        <td>
+                            <div class="action-group">
+                                <a href="{{ path('app_lesson_index', {'courseId': course.id}) }}" class="btn-small">📚 Lessons</a>
+                                <a href="{{ path('app_quiz_index', {'courseId': course.id}) }}" class="btn-small">✓ Quizzes</a>
+                                <a href="{{ path('app_course_edit', {'id': course.id}) }}" class="btn-small">Edit</a>
+                                <form method="POST" action="{{ path('app_course_delete', {'id': course.id}) }}" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ course.id) }}">
+                                    <button type="submit" class="btn-small btn-danger" onclick="return confirm('Delete this course?')">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <p>You haven't created any courses yet.</p>
+                <p><a href="{{ path('app_course_new') }}">Create your first course now</a></p>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
+
+<style>
+.action-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.action-group .btn-small {
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 13px;
+}
+</style>
+{% endblock %}
+
+
+

@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Student Assignments | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_admin') }}">Dashboard</a>
+            <a href="{{ path('app_user_index') }}">Users & Roles</a>
+            <a href="{{ path('app_group_index') }}">Groups</a>
+            <a href="{{ path('app_admin_student_group_index') }}" class="active">Student Assignments</a>
+            <a href="{{ path('app_reports') }}">Reports</a>
+            <a href="{{ path('app_system_settings') }}">System Settings</a>
+            <a href="{{ path('app_audit_logs') }}">Audit Logs</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="harvard-main">
+
+        <!-- TOP BAR -->
+        <header class="harvard-topbar">
+            <h1>Student Group Assignments</h1>
+            <div class="harvard-user">
+                <span>{{ app.user.userIdentifier }}</span>
+            </div>
+        </header>
+
+        <!-- FLASH MESSAGES -->
+        {% for message in app.flashes('success') %}
+            <div style="background: #d1fae5; color: #065f46; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #10b981;">
+                ✓ {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div style="background: #fee2e2; color: #991b1b; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #ef4444;">
+                ✗ {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div style="background: #fef3c7; color: #92400e; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
+                ⚠ {{ message }}
+            </div>
+        {% endfor %}
+
+        <!-- ASSIGN NEW STUDENT -->
+        <section class="harvard-section">
+            <div class="section-header">
+                <h2>Assign Student to Group</h2>
+            </div>
+
+            <form method="POST" action="{{ path('app_admin_student_group_create') }}" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px; align-items: end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="student_id">Select Student:</label>
+                    <select name="student_id" id="student_id" class="form-control" required>
+                        <option value="">-- Choose a student --</option>
+                        {% for student in students %}
+                            <option value="{{ student.id }}">{{ student.email }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="group_id">Select Group:</label>
+                    <select name="group_id" id="group_id" class="form-control" required>
+                        <option value="">-- Choose a group --</option>
+                        {% for group in groups %}
+                            <option value="{{ group.id }}">{{ group.name }} ({{ group.year }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary" style="padding: 10px 20px;">
+                    + Assign
+                </button>
+            </form>
+        </section>
+
+        <!-- CURRENT ASSIGNMENTS -->
+        <section class="harvard-section">
+            <div class="section-header">
+                <h2>Current Assignments ({{ student_groups|length }})</h2>
+            </div>
+
+            {% if student_groups %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student Email</th>
+                            <th>Group</th>
+                            <th>Year</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sg in student_groups %}
+                            <tr>
+                                <td>{{ sg.student.email }}</td>
+                                <td>{{ sg.group.name }}</td>
+                                <td>{{ sg.group.year }}</td>
+                                <td>
+                                    {% if sg.approved %}
+                                        <span class="badge success">Approved</span>
+                                    {% else %}
+                                        <span class="badge warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="POST" action="{{ path('app_admin_student_group_delete', {'id': sg.id}) }}" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sg.id) }}">
+                                        <button type="submit" class="btn-small danger" onclick="return confirm('Remove this assignment?');">
+                                            Remove
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p style="color: #6b7280; text-align: center; padding: 40px;">
+                    No student assignments yet. Start by assigning a student to a group above.
+                </p>
+            {% endif %}
+        </section>
+
+    </main>
+</div>
+{% endblock %}

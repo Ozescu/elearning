@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Announcements | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_admin') }}">Dashboard</a>
+            <a href="{{ path('app_user_index') }}">Users & Roles</a>
+            <a href="{{ path('app_group_index') }}">Groups</a>
+            <a href="{{ path('app_admin_student_group_index') }}">Student Assignments</a>
+            <a href="{{ path('app_announcement_index') }}" class="active">Announcements</a>
+            <a href="{{ path('app_reports') }}">Reports</a>
+            <a href="{{ path('app_system_settings') }}">System Settings</a>
+            <a href="{{ path('app_audit_logs') }}">Audit Logs</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="harvard-main">
+
+        <!-- TOP BAR -->
+        <header class="harvard-topbar">
+            <h1>Announcements</h1>
+            <div class="harvard-user">
+                <span>{{ app.user.userIdentifier }}</span>
+            </div>
+        </header>
+
+        <!-- NEW ANNOUNCEMENT BUTTON -->
+        <section class="harvard-section">
+            <div class="section-header">
+                <h2>Manage Announcements</h2>
+                <a href="{{ path('app_announcement_new') }}" class="btn-primary">+ New Announcement</a>
+            </div>
+
+            {% if announcements %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Group</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for announcement in announcements %}
+                            <tr>
+                                <td><strong>{{ announcement.title }}</strong></td>
+                                <td>
+                                    {% if announcement.isGlobal %}
+                                        <span class="badge success">Global</span>
+                                    {% else %}
+                                        <span class="badge warning">Group</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if announcement.group %}
+                                        {{ announcement.group.name }}
+                                    {% else %}
+                                        All Students
+                                    {% endif %}
+                                </td>
+                                <td>{{ announcement.createdAt|date('M d, Y H:i') }}</td>
+                                <td>
+                                    <a href="{{ path('app_announcement_edit', {'id': announcement.id}) }}" class="btn-small">Edit</a>
+                                    <form method="POST" action="{{ path('app_announcement_delete', {'id': announcement.id}) }}" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ announcement.id) }}">
+                                        <button type="submit" class="btn-small danger" onclick="return confirm('Delete this announcement?');">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p style="color: #6b7280; text-align: center; padding: 40px;">No announcements yet. Create one to get started!</p>
+            {% endif %}
+        </section>
+
+    </main>
+</div>
+{% endblock %}

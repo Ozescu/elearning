@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reports{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_admin') }}">Dashboard</a>
+            <a href="{{ path('app_user_index') }}">Users & Roles</a>
+            <a href="{{ path('app_group_index') }}">Groups</a>
+            <a href="{{ path('app_student_group_index') }}">Student Groups</a>
+            <a href="{{ path('app_reports') }}" class="active">Reports</a>
+            <a href="{{ path('app_system_settings') }}">System Settings</a>
+            <a href="{{ path('app_audit_logs') }}">Audit Logs</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>Reports & Analytics</h1>
+        </header>
+
+        <section class="admin-stats">
+            <div class="stat-card">
+                <strong>{{ totalUsers }}</strong>
+                <span>Total Users</span>
+            </div>
+            <div class="stat-card">
+                <strong>{{ totalAdmins }}</strong>
+                <span>Admins</span>
+            </div>
+            <div class="stat-card">
+                <strong>{{ totalTeachers }}</strong>
+                <span>Teachers</span>
+            </div>
+            <div class="stat-card">
+                <strong>{{ totalStudents }}</strong>
+                <span>Students</span>
+            </div>
+        </section>
+
+        <section class="admin-stats">
+            <div class="stat-card">
+                <strong>{{ totalGroups }}</strong>
+                <span>Total Groups</span>
+            </div>
+            <div class="stat-card">
+                <strong>{{ totalAssignments }}</strong>
+                <span>Student Assignments</span>
+            </div>
+            <div class="stat-card">
+                <strong>{{ approvedAssignments }}</strong>
+                <span>Approved</span>
+            </div>
+            <div class="stat-card">
+                <strong>{{ pendingAssignments }}</strong>
+                <span>Pending Approval</span>
+            </div>
+        </section>
+
+        <section class="harvard-section">
+            <h2>Quick Stats</h2>
+            <ul class="stats-list">
+                <li><strong>User Registration Rate:</strong> {{ (totalUsers > 0) ? ((totalStudents / totalUsers) * 100)|number_format(1) : 0 }}% Students</li>
+                <li><strong>Assignment Approval Rate:</strong> {{ (totalAssignments > 0) ? ((approvedAssignments / totalAssignments) * 100)|number_format(1) : 0 }}%</li>
+                <li><strong>Average Group Size:</strong> {{ (totalGroups > 0) ? (totalAssignments / totalGroups)|number_format(2) : 0 }} students per group</li>
+            </ul>
+        </section>
+    </main>
+</div>
+
+<style>
+    .stats-list {
+        list-style: none;
+        padding: 0;
+    }
+    .stats-list li {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+    }
+    .stats-list strong {
+        display: inline-block;
+        min-width: 220px;
+    }
+</style>
+{% endblock %}
+
+
+

@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quizzes | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Teacher</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_teacher') }}">Dashboard</a>
+            <a href="{{ path('app_course_index') }}">My Courses</a>
+            <a href="{{ path('app_student_group_index') }}">Manage Students</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>Quizzes - {{ course.title }}</h1>
+        </header>
+
+        <section class="harvard-section">
+            <div class="section-header">
+                <h2>Course Quizzes</h2>
+                <a href="{{ path('app_quiz_new', {'courseId': course.id}) }}" class="btn-primary">+ Add Quiz</a>
+            </div>
+
+            {% if quizzes %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Questions</th>
+                            <th>Deadline</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for quiz in quizzes %}
+                            <tr>
+                                <td><strong>{{ quiz.title }}</strong></td>
+                                <td>{{ quiz.questions|length }}</td>
+                                <td>
+                                    {% if quiz.deadline %}
+                                        {{ quiz.deadline|date('M d, Y H:i') }}
+                                        {% if quiz.isOverdue() %}
+                                            <span class="badge error">Overdue</span>
+                                        {% endif %}
+                                    {% else %}
+                                        No deadline
+                                    {% endif %}
+                                </td>
+                                <td>{{ quiz.createdAt|date('M d, Y') }}</td>
+                                <td>
+                                    <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn-small">Edit</a>
+                                    <form method="POST" action="{{ path('app_quiz_delete', {'id': quiz.id}) }}" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                                        <button type="submit" class="btn-small danger" onclick="return confirm('Delete this quiz?');">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p style="color: #6b7280; text-align: center; padding: 40px;">No quizzes yet. Create one to get started!</p>
+            {% endif %}
+        </section>
+
+        <div style="margin-top: 20px;">
+            <a href="{{ path('app_course_index') }}" class="btn-secondary">Back to Courses</a>
+        </div>
+
+    </main>
+</div>
+{% endblock %}

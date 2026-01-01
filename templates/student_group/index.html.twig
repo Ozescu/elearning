@@ -1,35 +1,75 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}StudentGroup index{% endblock %}
+{% block title %}Manage Students{% endblock %}
 
 {% block body %}
-    <h1>StudentGroup index</h1>
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Approved</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for student_group in student_groups %}
-            <tr>
-                <td>{{ student_group.id }}</td>
-                <td>{{ student_group.approved ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_student_group_show', {'id': student_group.id}) }}">show</a>
-                    <a href="{{ path('app_student_group_edit', {'id': student_group.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="harvard-layout">
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Teacher</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_teacher') }}">Dashboard</a>
+            <a href="{{ path('app_course_index') }}">My Courses</a>
+            <a href="{{ path('app_student_group_index') }}" class="active">Manage Students</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
 
-    <a href="{{ path('app_student_group_new') }}">Create new</a>
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>Manage Student Assignments</h1>
+            <div class="teacher-user">
+                <span>{{ app.user.userIdentifier }}</span>
+            </div>
+        </header>
+
+        <section class="harvard-section">
+            <div class="section-header">
+                <h2>Student Group Assignments</h2>
+                <a href="{{ path('app_student_group_new') }}" class="btn-primary">+ Assign Student to Group</a>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student</th>
+                        <th>Group</th>
+                        <th>Approved</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for student_group in student_groups %}
+                    <tr>
+                        <td>{{ student_group.id }}</td>
+                        <td>{{ student_group.student.email }}</td>
+                        <td>{{ student_group.group.name }} ({{ student_group.group.year }})</td>
+                        <td><span class="badge {% if student_group.approved %}success{% else %}warning{% endif %}">{{ student_group.approved ? 'Yes' : 'No' }}</span></td>
+                        <td>
+                            <a href="{{ path('app_student_group_show', {'id': student_group.id}) }}" class="btn-small">View</a>
+                            <a href="{{ path('app_student_group_edit', {'id': student_group.id}) }}" class="btn-small">Edit</a>
+                            <form method="POST" action="{{ path('app_student_group_delete', {'id': student_group.id}) }}" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ student_group.id) }}">
+                                <button type="submit" class="btn-small danger" onclick="return confirm('Delete this assignment?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding:20px;">No student groups found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
 {% endblock %}
+
+
+

@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Quiz | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Teacher</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_teacher') }}">Dashboard</a>
+            <a href="{{ path('app_course_index') }}">My Courses</a>
+            <a href="{{ path('app_student_group_index') }}">Manage Students</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>Edit Quiz: {{ quiz.title }}</h1>
+        </header>
+
+        <section class="harvard-section">
+            <div class="form-container">
+                {{ form_start(form) }}
+                
+                <div class="form-group">
+                    {{ form_label(form.title, 'Quiz Title') }}
+                    {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter quiz title'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description, 'Description') }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Enter quiz description', 'rows': 4}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.deadline, 'Deadline') }}
+                    {{ form_widget(form.deadline, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.course, 'Course') }}
+                    {{ form_widget(form.course, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Update Quiz</button>
+                    <a href="{{ path('app_quiz_index', {'courseId': quiz.course.id}) }}" class="btn-secondary">Cancel</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                <h3 style="color: #374151; margin-bottom: 15px;">Quiz Questions</h3>
+                <a href="{{ path('app_quiz_question_new', {'quizId': quiz.id}) }}" class="btn-primary">+ Add Question</a>
+                
+                {% if quiz.questions|length > 0 %}
+                    <table class="table" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Question</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for question in quiz.questions %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ question.question }}</td>
+                                    <td><span class="badge">{{ question.questionType|upper }}</span></td>
+                                    <td>
+                                        <a href="{{ path('app_quiz_question_edit', {'id': question.id}) }}" class="btn-small">Edit</a>
+                                        <form method="POST" action="{{ path('app_quiz_question_delete', {'id': question.id}) }}" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
+                                            <button type="submit" class="btn-small danger" onclick="return confirm('Delete this question?');">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p style="color: #6b7280; margin-top: 15px;">No questions added yet. Add questions to activate the quiz.</p>
+                {% endif %}
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ quiz.title }} - Take Quiz | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>EMSI</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_student') }}">Dashboard</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>{{ quiz.title }}</h1>
+        </header>
+
+        <section class="harvard-section">
+            <div style="max-width: 900px; margin: 0 auto;">
+                <form method="POST" action="{{ path('app_student_quiz_submit', {'id': quiz.id}) }}" style="background: white; padding: 30px; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <input type="hidden" name="_token" value="{{ csrf_token('submit_quiz' ~ quiz.id) }}">
+
+                    {% if quiz.questions|length == 0 %}
+                        <p style="color: #6b7280; text-align: center; padding: 40px;">This quiz has no questions yet.</p>
+                    {% else %}
+                        <div>
+                            {% for question in quiz.questions %}
+                                <div style="margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #e5e7eb;">
+                                    <div style="color: #C41E3A; font-weight: 600; font-size: 13px; margin-bottom: 8px;">Question {{ loop.index }} of {{ quiz.questions|length }}</div>
+                                    <h3 style="color: #2c3e50; margin: 0 0 20px 0; font-size: 18px;">{{ question.question }}</h3>
+
+                                    {% if question.questionType == 'multiple_choice' %}
+                                        <div style="margin-left: 0;">
+                                            {% for option in question.options %}
+                                                <label style="display: flex; align-items: center; margin-bottom: 12px; cursor: pointer;">
+                                                    <input type="radio" name="question_{{ question.id }}" value="{{ option }}" required style="margin-right: 10px; cursor: pointer;">
+                                                    <span style="color: #4b5563;">{{ option }}</span>
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+
+                                    {% elseif question.questionType == 'true_false' %}
+                                        <div style="margin-left: 0;">
+                                            <label style="display: flex; align-items: center; margin-bottom: 12px; cursor: pointer;">
+                                                <input type="radio" name="question_{{ question.id }}" value="true" required style="margin-right: 10px; cursor: pointer;">
+                                                <span style="color: #4b5563;">True</span>
+                                            </label>
+                                            <label style="display: flex; align-items: center; margin-bottom: 12px; cursor: pointer;">
+                                                <input type="radio" name="question_{{ question.id }}" value="false" required style="margin-right: 10px; cursor: pointer;">
+                                                <span style="color: #4b5563;">False</span>
+                                            </label>
+                                        </div>
+
+                                    {% elseif question.questionType == 'short_answer' %}
+                                        <div>
+                                            <input type="text" 
+                                                   name="question_{{ question.id }}" 
+                                                   placeholder="Your answer" 
+                                                   required
+                                                   style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 3px; font-family: inherit; font-size: 14px;">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 30px;">
+                            <button type="submit" class="btn-primary">Submit Quiz</button>
+                            <a href="{{ path('app_student_quiz_view', {'id': quiz.id}) }}" class="btn-secondary">Cancel</a>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}
+
+<style>
+.quiz-take-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.quiz-form {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.quiz-questions {
+    margin-bottom: 30px;
+}
+
+.question-block {
+    background: #f9fafb;
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border-left: 4px solid #3b82f6;
+}
+
+.question-number {
+    font-size: 12px;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.question-text {
+    color: #1f2937;
+    font-size: 18px;
+    margin: 0 0 20px 0;
+    font-weight: 600;
+}
+
+.question-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.option-label {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option-label:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.option-label input[type="radio"] {
+    margin-right: 12px;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+.option-label span {
+    color: #374151;
+    font-weight: 500;
+}
+
+.question-input {
+    margin-top: 10px;
+}
+
+.question-input input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.question-input input[type="text"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.quiz-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.quiz-actions button,
+.quiz-actions a {
+    padding: 12px 30px;
+    font-size: 16px;
+}
+</style>
+{% endblock %}

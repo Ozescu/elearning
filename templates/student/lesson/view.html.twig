@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ lesson.title }} | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>EMSI</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_student') }}">Dashboard</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>{{ lesson.title }}</h1>
+        </header>
+
+        <section class="harvard-section">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                {% if lesson.description %}
+                    <div style="margin-bottom: 25px;">
+                        <h3 style="border: none; padding: 0; margin-bottom: 15px;">Description</h3>
+                        <p style="color: #7f8c8d; line-height: 1.7;">{{ lesson.description }}</p>
+                    </div>
+                {% endif %}
+
+                {% if lesson.deadline %}
+                    <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 3px; margin-bottom: 20px;">
+                        <strong>Deadline:</strong> 
+                        {{ lesson.deadline|date('M d, Y H:i') }}
+                        {% if lesson.isOverdue() %}
+                            <span class="badge danger">Overdue</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if lesson.pdfFile %}
+                    <div style="background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 20px; border-radius: 3px; margin-bottom: 25px; text-align: center;">
+                        <h4 style="margin: 0 0 15px 0; color: #2c3e50;">📄 Lesson Material</h4>
+                        <p style="margin: 0;">
+                            <a href="{{ asset('uploads/lessons/' ~ lesson.pdfFile) }}" class="btn-primary" target="_blank">
+                                Download PDF
+                            </a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if studentLesson and studentLesson.completed %}
+                    <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 15px; border-radius: 3px; text-align: center; margin-bottom: 20px;">
+                        <p style="margin: 0;"><strong style="color: #155724;">✓ You have completed this lesson</strong></p>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #155724;">{{ studentLesson.completedAt|date('M d, Y H:i') }}</p>
+                    </div>
+                {% else %}
+                    <form method="POST" action="{{ path('app_student_lesson_complete', {'id': lesson.id}) }}" style="text-align: center; margin-top: 30px;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('lesson_complete' ~ lesson.id) }}">
+                        <button type="submit" class="btn-primary">Mark as Read</button>
+                    </form>
+                {% endif %}
+            </div>
+        </section>
+
+        <div style="padding: 0 40px; margin-top: 20px;">
+            <a href="{{ path('app_student') }}" class="btn-secondary">← Back to Dashboard</a>
+        </div>
+
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_admin') }}">Dashboard</a>
+            <a href="{{ path('app_user_index') }}" class="active">Users & Roles</a>
+            <a href="{{ path('app_group_index') }}">Groups</a>
+            <a href="{{ path('app_student_group_index') }}">Student Groups</a>
+            <a href="{{ path('app_reports') }}">Reports</a>
+            <a href="{{ path('app_system_settings') }}">System Settings</a>
+            <a href="{{ path('app_audit_logs') }}">Audit Logs</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>Edit User</h1>
+        </header>
+        <section class="harvard-section">
+            {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+        </section>
+    </main>
+</div>
+{% endblock %}
+
+
+

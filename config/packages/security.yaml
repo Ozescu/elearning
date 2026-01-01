@@ -13,12 +13,10 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            form_login:
-                login_path: app_login
-                check_path: app_login
+            custom_authenticators:
+                - App\Security\UserAuthenticator
             logout:
                 path: app_logout
-            entry_point: App\Security\UserAuthenticator
 
             remember_me:
                 secret: '%kernel.secret%'
@@ -30,5 +28,12 @@ security:
 
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/teacher, roles: ROLE_TEACHER }
+        - { path: ^/user, roles: ROLE_ADMIN }
+        - { path: ^/group, roles: ROLE_ADMIN }
+        - { path: ^/reports, roles: ROLE_ADMIN }
+        - { path: ^/system-settings, roles: ROLE_ADMIN }
+        - { path: ^/audit-logs, roles: ROLE_ADMIN }
+        - { path: ^/student/group, roles: [ROLE_ADMIN, ROLE_TEACHER] }
+        - { path: ^/course, roles: [ROLE_ADMIN, ROLE_TEACHER] }
+        - { path: ^/teacher, roles: [ROLE_ADMIN, ROLE_TEACHER] }
         - { path: ^/student, roles: ROLE_STUDENT }

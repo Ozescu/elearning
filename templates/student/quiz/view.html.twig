@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ quiz.title }} | EMSI{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
+
+<div class="harvard-layout">
+
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>EMSI</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_student') }}">Dashboard</a>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>{{ quiz.title }}</h1>
+        </header>
+
+        <section class="harvard-section">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <h2 style="border: none; padding: 0; margin-bottom: 25px;">{{ quiz.title }}</h2>
+                
+                {% if quiz.description %}
+                    <div style="margin-bottom: 25px;">
+                        <h3 style="border: none; padding: 0; margin-bottom: 15px;">Description</h3>
+                        <p style="color: #7f8c8d; line-height: 1.7;">{{ quiz.description }}</p>
+                    </div>
+                {% endif %}
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 3px; margin-bottom: 25px;">
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #2c3e50;">Total Questions:</strong> 
+                        {{ quiz.questions|length }}
+                    </div>
+
+                    {% if quiz.deadline %}
+                        <div>
+                            <strong style="color: #2c3e50;">Deadline:</strong> 
+                            {{ quiz.deadline|date('M d, Y H:i') }}
+                            {% if quiz.isOverdue() %}
+                                <span class="badge danger">Overdue</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if studentQuiz %}
+                    <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 20px; border-radius: 3px; margin-bottom: 20px;">
+                        <h4 style="margin: 0 0 15px 0; color: #155724;">Your Submission</h4>
+                        <p style="margin: 0 0 10px 0;"><strong>Score:</strong> {{ studentQuiz.score|round(2) }}%</p>
+                        <p style="margin: 0 0 15px 0;"><strong>Submitted:</strong> {{ studentQuiz.submittedAt|date('M d, Y H:i') }}</p>
+                        <a href="{{ path('app_student_quiz_results', {'id': quiz.id}) }}" class="btn-secondary">View Results</a>
+                    </div>
+                {% else %}
+                    {% if quiz.isOverdue() %}
+                        <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; border-radius: 3px; margin-bottom: 20px;">
+                            <p style="margin: 0; color: #721c24;"><strong>❌ This quiz is overdue and cannot be submitted.</strong></p>
+                        </div>
+                    {% else %}
+                        <div style="background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 20px; border-radius: 3px; margin-bottom: 20px; text-align: center;">
+                            <p style="margin: 0 0 15px 0; color: #0c5460;">You haven't submitted this quiz yet.</p>
+                            <a href="{{ path('app_student_quiz_start', {'id': quiz.id}) }}" class="btn-primary">Start Quiz</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </section>
+
+        <div style="padding: 0 40px; margin-top: 20px;">
+            <a href="{{ path('app_student') }}" class="btn-secondary">← Back to Dashboard</a>
+        </div>
+
+    </main>
+</div>
+{% endblock %}
+
+<style>
+.quiz-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quiz-info {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.quiz-info h2 {
+    color: #1f2937;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.quiz-description {
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.quiz-description h3 {
+    color: #374151;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.quiz-description p {
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.quiz-details {
+    background: #e7f3ff;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border-left: 4px solid #3b82f6;
+}
+
+.detail-item {
+    margin-bottom: 10px;
+    color: #1f2937;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.submission-status {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.submission-status h3 {
+    color: #155724;
+    margin-bottom: 15px;
+}
+
+.submission-status p {
+    color: #155724;
+    margin-bottom: 10px;
+}
+
+.submission-status p:last-of-type {
+    margin-bottom: 15px;
+}
+
+.quiz-notice {
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.quiz-notice.success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.quiz-notice.error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.quiz-notice p {
+    margin: 0 0 15px 0;
+}
+
+.quiz-notice a {
+    text-decoration: none;
+}
+</style>
+{% endblock %}

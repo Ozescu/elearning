@@ -1,30 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Group{% endblock %}
+{% block title %}View Group{% endblock %}
 
 {% block body %}
-    <h1>Group</h1>
+<link rel="stylesheet" href="{{ asset('css/harvard.css') }}">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ group.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ group.name }}</td>
-            </tr>
-            <tr>
-                <th>Year</th>
-                <td>{{ group.year }}</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="harvard-layout">
+    <aside class="harvard-sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ asset('images/emsi.png') }}" alt="EMSI">
+            <span>Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_admin') }}">Dashboard</a>
+            <a href="{{ path('app_user_index') }}">Users & Roles</a>
+            <a href="{{ path('app_group_index') }}" class="active">Groups</a>
+            <a href="{{ path('app_student_group_index') }}">Student Groups</a>
+            <a href="{{ path('app_reports') }}">Reports</a>
+            <a href="{{ path('app_system_settings') }}">System Settings</a>
+            <a href="{{ path('app_audit_logs') }}">Audit Logs</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    </aside>
 
-    <a href="{{ path('app_group_index') }}">back to list</a>
-
-    <a href="{{ path('app_group_edit', {'id': group.id}) }}">edit</a>
-
-    {{ include('group/_delete_form.html.twig') }}
+    <main class="harvard-main">
+        <header class="harvard-topbar">
+            <h1>Group Details</h1>
+        </header>
+        <section class="harvard-section">
+            <div class="detail-view">
+                <div class="detail-item">
+                    <label>ID:</label>
+                    <span>{{ group.id }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Name:</label>
+                    <span>{{ group.name }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Year:</label>
+                    <span>{{ group.year }}</span>
+                </div>
+            </div>
+            <div class="form-actions" style="margin-top:20px;">
+                <a href="{{ path('app_group_edit', {'id': group.id}) }}" class="btn-primary">Edit</a>
+                <a href="{{ path('app_group_index') }}" class="btn-secondary">Back to List</a>
+            </div>
+        </section>
+    </main>
+</div>
 {% endblock %}
+
+
+
